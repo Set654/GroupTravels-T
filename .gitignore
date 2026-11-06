@@ -1,0 +1,17 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# .NET
+bin/
+obj/
+
+# Tests
+TestResults/
+
+# Local secrets
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
