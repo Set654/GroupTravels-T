@@ -2,5 +2,5 @@
 
 namespace TripService.Domain.Debts
 {
-    public sealed record DebtTransfer(Guid DebtorParticipantId, Guid CreditorParticipantId, decimal Amount);
+    public sealed record DebtTransfer(int DebtorParticipantId, int CreditorParticipantId, decimal Amount);
 }

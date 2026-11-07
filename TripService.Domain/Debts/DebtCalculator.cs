@@ -5,10 +5,10 @@ namespace TripService.Domain.Debts
     {
         private sealed class WorkingBalance
         {
-            public Guid ParticipantId { get; }
+            public int ParticipantId { get; }
             public decimal Remaining { get; set; }
 
-            public WorkingBalance(Guid participantId, decimal balance)
+            public WorkingBalance(int participantId, decimal balance)
             {
                 ParticipantId = participantId;
                 Remaining = balance;
