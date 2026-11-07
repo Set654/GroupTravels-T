@@ -1,6 +1,5 @@
 ﻿
-
 namespace TripService.Domain.Debts
 {
-    public sealed record ParticipantBalance(Guid ParticipantId, decimal Balance);
+    public sealed record ParticipantBalance(int ParticipantId, decimal Balance);
 }
