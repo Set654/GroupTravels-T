@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="TripService.Api/TripService.Api.csproj" Id="f8968769-4177-44d0-b5b2-57aacfb611e1" />
   <Project Path="TripService.Application/TripService.Application.csproj" />
   <Project Path="TripService.Domain.Tests/TripService.Domain.Tests.csproj" Id="02eda163-c614-4e4c-8ad7-77b1eb5c4f57" />
   <Project Path="TripService.Domain/TripService.Domain.csproj" />
