@@ -5,6 +5,7 @@ from calendar import monthrange
 from datetime import date
 
 from errors import SearchValidationError
+from catalog import load_locations
 
 
 def _normalize_code(value: str, name: str) -> str:
@@ -58,3 +59,26 @@ def validate_search_parameters(
             raise SearchValidationError("return_at cannot be entirely before departure_at")
 
     return origin, destination, departure_at, return_at
+
+
+def validate_mvp_search(
+    origin: str, destination: str, departure_date: str, *, today: date
+) -> tuple[str, str, date]:
+    """Validate the stricter HTTP contract without narrowing the legacy CLI."""
+    origin = _normalize_code(origin, "origin")
+    destination = _normalize_code(destination, "destination")
+    locations = load_locations()
+    if origin not in locations or destination not in locations:
+        raise SearchValidationError("origin and destination must be known location codes")
+    if origin == destination:
+        raise SearchValidationError("origin and destination must differ")
+    if (not isinstance(departure_date, str)
+            or re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", departure_date) is None):
+        raise SearchValidationError("departureDate must use YYYY-MM-DD")
+    try:
+        parsed = date.fromisoformat(departure_date)
+    except ValueError:
+        raise SearchValidationError("departureDate must be a valid calendar date") from None
+    if parsed < today:
+        raise SearchValidationError("departureDate cannot be in the past")
+    return origin, destination, parsed

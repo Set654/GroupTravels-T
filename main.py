@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 from errors import ConfigurationError, ProviderResponseError, ProviderSearchError
 from validation import validate_search_parameters
+from travelpayouts import fetch_offers
 
 load_dotenv()
 
@@ -22,53 +23,10 @@ def get_cheap_bilets(
     return_at: str | None = None,
 ) -> list[dict]:
     """Return cached offers, an empty list, or an exception on failure."""
-    url = 'https://api.travelpayouts.com/aviasales/v3/prices_for_dates'
-
-    if not isinstance(TOKEN, str) or not TOKEN.strip():
-        raise ConfigurationError("TRAVELPAYOUTS_TOKEN is not configured")
-
-    origin, destination, departure_at, return_at = validate_search_parameters(
-        origin, destination, departure_at, return_at
+    return fetch_offers(
+        origin, destination, departure_at, return_at, token=TOKEN
     )
 
-    headers = {
-        'X-Access-Token': TOKEN.strip()
-    }
-
-    params = {
-        "destination": destination,
-        "origin": origin,
-        "departure_at": departure_at,
-        "limit": 10,
-        "currency": "rub",
-        "one_way": "true",
-        "return_at": return_at,
-        "sorting": "price"
-    }
-    
-    if return_at is not None:
-        params["one_way"] = "false"
-
-    filtered_params = {key: value for key, value in params.items() if value is not None}
-
-    
-    response = requests.get(url, params=filtered_params, headers=headers, timeout=10)
-    response.raise_for_status()
-    
-
-
-    data = response.json()
-    if not isinstance(data, dict):
-        raise ProviderResponseError("API response is not a dictionary")
-    if data.get("success") is not True:
-        raise ProviderSearchError("API did not confirm a successful search")
-    tickets = data.get("data")
-    if not isinstance(tickets, list):
-        raise ProviderResponseError("tickets must be a list")
-    for ticket in tickets:
-        if not isinstance(ticket, dict):
-            raise ProviderResponseError("Each ticket must be a dictionary")
-    return tickets
 
 def save_tickets(
     origin: str,

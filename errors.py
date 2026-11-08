@@ -15,3 +15,7 @@ class ProviderResponseError(ValueError):
 
 class ProviderSearchError(RuntimeError):
     """Travelpayouts did not confirm a successful search."""
+
+
+class ServiceBusyError(RuntimeError):
+    """All available provider request slots are occupied."""

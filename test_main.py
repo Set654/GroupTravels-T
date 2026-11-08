@@ -19,6 +19,7 @@ class TestFlights(unittest.TestCase):
         self.addCleanup(token_patch.stop)
 
         self.response = Mock(spec=requests.Response)
+        self.response.status_code = 200
         self.response.json.return_value = {"success": True, "data": []}
         request_patch = patch("main.requests.get", return_value=self.response)
         self.get = request_patch.start()
@@ -86,6 +87,8 @@ class TestFlights(unittest.TestCase):
                 # Keep the real HTTP status check; only the network is replaced.
                 response = requests.Response()
                 response.status_code = status
+                response._content = b""
+                response._content_consumed = True
                 response.json = Mock(return_value={"success": True, "data": []})
                 self.get.return_value = response
 
@@ -164,6 +167,7 @@ class TestFlights(unittest.TestCase):
             },
             headers={"X-Access-Token": "test-token"},
             timeout=10,
+            allow_redirects=False,
         )
 
     def test_round_trip_request_parameters(self):
@@ -183,6 +187,7 @@ class TestFlights(unittest.TestCase):
             },
             headers={"X-Access-Token": "test-token"},
             timeout=10,
+            allow_redirects=False,
         )
 
 

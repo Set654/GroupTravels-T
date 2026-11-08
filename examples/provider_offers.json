@@ -1,0 +1,20 @@
+[
+  {
+    "origin": "MOW",
+    "destination": "LED",
+    "origin_airport": "SVO",
+    "destination_airport": "LED",
+    "price": 7000,
+    "airline": "SU",
+    "flight_number": "1234",
+    "departure_at": "2026-12-15T10:00:00+03:00",
+    "duration_to": 95,
+    "transfers": 0,
+    "link": "/search/MOW1512LED1?t=demonstration"
+  },
+  {
+    "origin": "MOW",
+    "destination": "LED",
+    "price": 4500.75
+  }
+]

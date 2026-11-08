@@ -1,0 +1,33 @@
+{
+  "source": "Aviasales",
+  "dataType": "cached_offers",
+  "currency": "RUB",
+  "flights": [
+    {
+      "origin": "MOW",
+      "destination": "LED",
+      "departureDate": "2026-12-15",
+      "departureAt": null,
+      "airline": null,
+      "flightNumber": null,
+      "price": 4500.75,
+      "currency": "RUB",
+      "transfers": null,
+      "durationMinutes": null,
+      "bookingUrl": null
+    },
+    {
+      "origin": "MOW",
+      "destination": "LED",
+      "departureDate": "2026-12-15",
+      "departureAt": "2026-12-15T07:00:00Z",
+      "airline": "SU",
+      "flightNumber": "1234",
+      "price": 7000,
+      "currency": "RUB",
+      "transfers": 0,
+      "durationMinutes": 95,
+      "bookingUrl": "https://www.aviasales.ru/search/MOW1512LED1?t=demonstration"
+    }
+  ]
+}
