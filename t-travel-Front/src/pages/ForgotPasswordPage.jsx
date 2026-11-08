@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SvgStage, Hotspot, SvgInput } from '../components/SvgStage.jsx';
+import { AuthCard, PageHeading, Tabs, FormField, ActionButton, CenterActions } from '../components/AuthUI.jsx';
 import { authApi } from '../lib/api.js';
 import { isValidEmail, isValidPhone, normalizePhone } from '../lib/validators.js';
 
@@ -10,6 +10,7 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [busy, setBusy] = useState(false);
+
   async function submit(event) {
     event.preventDefault();
     if (busy) return;
@@ -20,17 +21,23 @@ export default function ForgotPasswordPage() {
     try {
       await authApi.requestPasswordReset(value, method);
       navigate('/reset-sent', { state: { contact: value, type: method } });
-    } catch (e) { window.alert(e.message); }
-    finally { setBusy(false); }
+    } catch (error) {
+      window.alert(error.message);
+    } finally {
+      setBusy(false);
+    }
   }
-  return <SvgStage name={method === 'email' ? 'Reset_password-Email.svg' : 'Reset_password-number.svg'} height={372}>
-    <Hotspot x={32} y={134} w={233} h={40} label="Email" onClick={() => setMethod('email')} />
-    <Hotspot x={285} y={134} w={233} h={40} label="Телефон" onClick={() => setMethod('phone')} />
-    <form className="svg-stage-form" onSubmit={submit} noValidate>
-      {method === 'email' ?
-        <SvgInput x={32} y={228} w={486} type="email" autoComplete="email" label="Email" value={email} onChange={(e) => setEmail(e.target.value)} /> :
-        <SvgInput x={32} y={228} w={486} type="tel" autoComplete="tel" label="Номер телефона" value={phone} onChange={(e) => setPhone(e.target.value)} />}
-      <Hotspot x={198} y={308} w={154} h={40} type="submit" disabled={busy} label="Получить код" />
+
+  return <AuthCard variant="forgot">
+    <PageHeading title="Сброс пароля">Укажите Email или номер телефона, связанный с аккаунтом.<br/>Мы отправим вам код для сброса пароля.</PageHeading>
+    <Tabs value={method} onChange={setMethod} options={[{ value: 'email', label: 'Email' }, { value: 'phone', label: 'Телефон' }]} />
+    <form className="forgot-form" onSubmit={submit} noValidate>
+      {method === 'email'
+        ? <FormField label="Email" type="email" autoComplete="email" value={email} placeholder="Например, makarena@mail.ru" onChange={e => setEmail(e.target.value)} />
+        : <FormField label="Номер телефона" type="tel" autoComplete="tel" value={phone} placeholder="Например, +7 800 555-35-35" onChange={e => setPhone(e.target.value)} />}
+      <CenterActions className="forgot-submit">
+        <ActionButton type="submit" size="small" disabled={busy}>Получить код</ActionButton>
+      </CenterActions>
     </form>
-  </SvgStage>;
+  </AuthCard>;
 }

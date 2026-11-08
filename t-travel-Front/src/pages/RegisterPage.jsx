@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SvgStage, SvgInput, Hotspot } from '../components/SvgStage.jsx';
+import { AuthCard, PageHeading, Tabs, FormField, ActionButton, CenterActions } from '../components/AuthUI.jsx';
 import { isValidEmail, isValidPhone, normalizePhone, validatePassword } from '../lib/validators.js';
 
 export default function RegisterPage() {
@@ -24,17 +24,26 @@ export default function RegisterPage() {
     });
   }
 
-  return <SvgStage name="Registration.svg" height={624}>
-    <Hotspot x={32} y={112} w={233} h={40} label="Вход" onClick={() => navigate('/login')} />
-    <Hotspot x={285} y={112} w={233} h={40} label="Регистрация" />
-    <form className="svg-stage-form" noValidate onSubmit={submit}>
-      <SvgInput x={32} y={206} w={486} label="Email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <SvgInput x={32} y={296} w={486} label="Номер телефона" type="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
-      <SvgInput x={32} y={398} w={446} label="Пароль" type={showPassword ? 'text' : 'password'} autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <Hotspot x={474} y={399} w={36} h={46} label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowPassword(!showPassword)} />
-      <SvgInput x={32} y={488} w={446} label="Повторите пароль" type={showConfirm ? 'text' : 'password'} autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-      <Hotspot x={474} y={489} w={36} h={46} label={showConfirm ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setShowConfirm(!showConfirm)} />
-      <Hotspot x={178} y={560} w={194} h={40} label="Зарегистрироваться" type="submit" />
+  return <AuthCard variant="register">
+    <PageHeading title="Создайте аккаунт">Присоединяйтесь и планируйте поездки вместе с друзьями.</PageHeading>
+    <Tabs className="auth-main-tabs" value="register" onChange={v => v === 'login' && navigate('/login')}
+      options={[{ value: 'login', label: 'Вход' }, { value: 'register', label: 'Регистрация' }]} />
+    <form className="register-form" onSubmit={submit} noValidate>
+      <FormField label="Email" type="email" autoComplete="email" value={email}
+        placeholder="Например, makarena@mail.ru" onChange={e => setEmail(e.target.value)} />
+      <FormField className="register-phone" label="Номер телефона" type="tel" autoComplete="tel" value={phone}
+        placeholder="Например, +7 800 555-35-35" onChange={e => setPhone(e.target.value)} />
+      <FormField className="register-password" label="Пароль" autoComplete="new-password"
+        type={showPassword ? 'text' : 'password'} value={password} placeholder="Не менее 8 символов"
+        onChange={e => setPassword(e.target.value)} toggleVisible={showPassword}
+        onToggleVisible={() => setShowPassword(v => !v)} />
+      <FormField className="register-confirm" label="Повторите пароль" autoComplete="new-password"
+        type={showConfirm ? 'text' : 'password'} value={confirmPassword} placeholder="Повторите пароль"
+        onChange={e => setConfirmPassword(e.target.value)} toggleVisible={showConfirm}
+        onToggleVisible={() => setShowConfirm(v => !v)} />
+      <CenterActions className="register-submit">
+        <ActionButton type="submit">Зарегистрироваться</ActionButton>
+      </CenterActions>
     </form>
-  </SvgStage>;
+  </AuthCard>;
 }

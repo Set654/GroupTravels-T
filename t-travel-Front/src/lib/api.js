@@ -1,7 +1,5 @@
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
 export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true';
-console.log('DEMO_MODE:', DEMO_MODE);
-console.log('ENV VALUE:', import.meta.env.VITE_DEMO_MODE);
 
 const delay = (ms = 400) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -35,7 +33,7 @@ export const authApi = {
     return post('/auth/login', { email, password });
   },
   async register({ name, email, phone, password }) {
-    if (DEMO_MODE) { await delay(); return { message: 'Аккаунт создан' }; }
+    if (DEMO_MODE) { await delay(); return { accessToken: 'demo-token', user: { email, name } }; }
     return post('/auth/register', { name, email, ...(phone ? { phone } : {}), password });
   },
   async sendPhoneCode(phone) {

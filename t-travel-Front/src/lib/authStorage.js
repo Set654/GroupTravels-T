@@ -9,7 +9,7 @@ export function saveToken(token) {
 }
 
 export function clearToken() {
-  try { sessionStorage.removeItem(KEY); } catch { /* Не требуется. */ }
+  try { sessionStorage.removeItem(KEY); } catch { }
 }
 
 export function extractToken(payload) {

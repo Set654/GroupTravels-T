@@ -11,23 +11,33 @@ import WelcomePage from './pages/WelcomePage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import { getToken } from './lib/authStorage.js';
 
+function AuthLayout({ children }) {
+  return <div className="auth-page-frame">{children}</div>;
+}
+
 function RequireAuth({ children }) {
   return getToken() ? children : <Navigate to="/login" replace />;
 }
 
 export default function App() {
-  return <BrowserRouter><Routes>
-    <Route path="/" element={<Navigate to="/login" replace />} />
-    <Route path="/login" element={<LoginPage />} />
-    <Route path="/register" element={<RegisterPage />} />
-    <Route path="/acquaintance" element={<AcquaintancePage />} />
-    <Route path="/verify-phone" element={<VerifyPhonePage />} />
-    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-    <Route path="/reset-sent" element={<ResetSentPage />} />
-    <Route path="/reset-code" element={<ResetCodePage />} />
-    <Route path="/new-password" element={<NewPasswordPage />} />
-    <Route path="/welcome" element={<RequireAuth><WelcomePage /></RequireAuth>} />
-    <Route path="*" element={<Navigate to="/login" replace />} />
-    <Route path="/dashboard"element={<RequireAuth><DashboardPage /></RequireAuth>}/>
-  </Routes></BrowserRouter>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<AuthLayout><LoginPage /></AuthLayout>} />
+        <Route path="/register" element={<AuthLayout><RegisterPage /></AuthLayout>} />
+        <Route path="/acquaintance" element={<AuthLayout><AcquaintancePage /></AuthLayout>} />
+        <Route path="/verify-phone" element={<AuthLayout><VerifyPhonePage /></AuthLayout>} />
+        <Route path="/forgot-password" element={<AuthLayout><ForgotPasswordPage /></AuthLayout>} />
+        <Route path="/reset-sent" element={<AuthLayout><ResetSentPage /></AuthLayout>} />
+        <Route path="/reset-code" element={<AuthLayout><ResetCodePage /></AuthLayout>} />
+        <Route path="/new-password" element={<AuthLayout><NewPasswordPage /></AuthLayout>} />
+        <Route path="/welcome" element={<RequireAuth><AuthLayout><WelcomePage /></AuthLayout></RequireAuth>} />
+        <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
+        {/* Создание поездки не реализовано: временно открываем дашборд. */}
+        <Route path="/new" element={<RequireAuth><Navigate to="/dashboard" replace /></RequireAuth>} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }

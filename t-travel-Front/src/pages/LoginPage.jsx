@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { SvgStage, Hotspot, SvgInput } from '../components/SvgStage.jsx';
+import { AuthCard, PageHeading, Tabs, FormField, ActionButton, CenterActions } from '../components/AuthUI.jsx';
 import { authApi } from '../lib/api.js';
 import { extractToken, saveToken } from '../lib/authStorage.js';
 import { isValidEmail, isValidPhone, normalizePhone } from '../lib/validators.js';
@@ -36,28 +36,39 @@ export default function LoginPage() {
         saveToken(token);
         navigate('/welcome', { replace: true });
       }
-    } catch (error) { window.alert(error.message); }
-    finally { setBusy(false); }
+    } catch (error) {
+      window.alert(error.message);
+    } finally {
+      setBusy(false);
+    }
   }
 
-  return <SvgStage name={isSMS ? 'Log_in_SMS.svg' : 'Log_in_Email-number.svg'} height={isSMS ? 452 : 542}>
-    <Hotspot x={32} y={112} w={233} h={40} label="Вход" onClick={() => navigate('/login')} />
-    <Hotspot x={285} y={112} w={233} h={40} label="Регистрация" onClick={() => navigate('/register')} />
-    <Hotspot x={32} y={206} w={233} h={48} label="SMS-код" onClick={() => setParams({ method: 'sms' })} />
-    <Hotspot x={285} y={206} w={233} h={48} label="Email или телефон" onClick={() => setParams({})} />
-    <form className="svg-stage-form" onSubmit={submit} noValidate>
-      {isSMS ? <SvgInput x={32} y={308} w={486} label="Номер телефона" type="tel"
-        autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} /> : <>
-        <SvgInput x={32} y={308} w={486} label="Email или номер телефона"
-          autoComplete="username" value={contact} onChange={(event) => setContact(event.target.value)} />
-        <SvgInput x={32} y={398} w={446} label="Пароль"
-          autoComplete="current-password" type={passwordVisible ? 'text' : 'password'} value={password}
-          onChange={(event) => setPassword(event.target.value)} />
-        <Hotspot x={473} y={399} w={37} h={45} label={passwordVisible ? 'Скрыть пароль' : 'Показать пароль'} onClick={() => setPasswordVisible(!passwordVisible)} />
-        <Hotspot x={392} y={363} w={129} h={33} label="Забыли пароль?" onClick={() => navigate('/forgot-password')} />
+  return <AuthCard variant={isSMS ? 'login-sms' : 'login'}>
+    <PageHeading title="С возвращением!">Войдите, чтобы запланировать поездку.</PageHeading>
+    <Tabs className="auth-main-tabs" value="login" onChange={v => v === 'register' && navigate('/register')}
+      options={[{ value: 'login', label: 'Вход' }, { value: 'register', label: 'Регистрация' }]} />
+
+    <section className="login-method">
+      <h2 className="section-label">Способ входа</h2>
+      <Tabs value={method} onChange={v => setParams(v === 'sms' ? { method: 'sms' } : {})}
+        options={[{ value: 'sms', label: 'SMS-код' }, { value: 'email', label: 'Email или телефон' }]} />
+    </section>
+
+    <form className="login-form" onSubmit={submit} noValidate>
+      {isSMS ? <FormField label="Номер телефона" type="tel" autoComplete="tel" value={phone}
+        placeholder="Например, +7 800 555-35-35" onChange={e => setPhone(e.target.value)} /> : <>
+        <FormField label="Email или номер телефона" autoComplete="username" value={contact}
+          placeholder="Например, makarena@mail.ru или +7 800 555-35-35"
+          onChange={e => setContact(e.target.value)} />
+        <FormField className="login-password" label="Пароль" autoComplete="current-password"
+          type={passwordVisible ? 'text' : 'password'} value={password} placeholder="Не менее 8 символов"
+          onChange={e => setPassword(e.target.value)} toggleVisible={passwordVisible}
+          onToggleVisible={() => setPasswordVisible(v => !v)} rightLink="Забыли пароль?"
+          rightLinkClick={() => navigate('/forgot-password')} />
       </>}
-      <Hotspot x={198} y={isSMS ? 388 : 478} w={154} h={40} type="submit" disabled={busy}
-        label={isSMS ? 'Получить код' : 'Войти'} />
+      <CenterActions className="login-submit">
+        <ActionButton type="submit" size="small" disabled={busy}>{isSMS ? 'Получить код' : 'Войти'}</ActionButton>
+      </CenterActions>
     </form>
-  </SvgStage>;
+  </AuthCard>;
 }

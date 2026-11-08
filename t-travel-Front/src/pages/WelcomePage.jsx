@@ -1,15 +1,22 @@
-import { SvgStage, Hotspot } from '../components/SvgStage.jsx';
 import { useNavigate } from 'react-router-dom';
+import { AuthCard, PageHeading, ActionButton, CenterActions } from '../components/AuthUI.jsx';
 
 export default function WelcomePage() {
   const navigate = useNavigate();
+  const tripsBase = import.meta.env.VITE_TRIPS_URL;
   function openTrips(path) {
-    const base = import.meta.env.VITE_TRIPS_URL;
-    if (base) { window.location.assign(`${base.replace(/\/$/, '')}${path}`); return; }
-    window.alert('Экран поездок пока не подключён.');
+    if (tripsBase) {
+      window.location.assign(`${tripsBase.replace(/\/$/, '')}${path}`);
+      return;
+    }
+    navigate(path);
   }
-  return <SvgStage name="Welcome.svg" height={254}>
-    <Hotspot x={178} y={146} w={194} h={40} label="Создать поездку" onClick={() => openTrips('/new')} />
-    <Hotspot x={178} y={190} w={194} h={40} label="Мои поездки" onClick={() => navigate('/dashboard')} />
-  </SvgStage>;
+
+  return <AuthCard variant="welcome">
+    <PageHeading title="Всё готово к путешествиям!">Создайте первую поездку, пригласите друзей и начните<br className="desktop-only"/> записывать общие расходы.</PageHeading>
+    <CenterActions className="welcome-actions">
+      <ActionButton onClick={() => openTrips('/new')}>Создать поездку</ActionButton>
+      <ActionButton variant="secondary" onClick={() => openTrips('/dashboard')}>Мои поездки</ActionButton>
+    </CenterActions>
+  </AuthCard>;
 }

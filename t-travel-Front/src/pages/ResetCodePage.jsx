@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { SvgStage, SvgInput, Hotspot } from '../components/SvgStage.jsx';
+import { AuthCard, PageHeading, FormField, ActionButton, CenterActions } from '../components/AuthUI.jsx';
 import { authApi } from '../lib/api.js';
 
 export default function ResetCodePage() {
@@ -8,6 +8,7 @@ export default function ResetCodePage() {
   const { state } = useLocation();
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
+
   async function submit(event) {
     event.preventDefault();
     if (!state?.contact) return navigate('/forgot-password');
@@ -18,14 +19,21 @@ export default function ResetCodePage() {
       const resetToken = data?.resetToken ?? data?.token;
       if (!resetToken) throw new Error('Сервер не вернул токен сброса пароля.');
       navigate('/new-password', { state: { resetToken }, replace: true });
-    } catch (e) { window.alert(e.message); }
-    finally { setBusy(false); }
+    } catch (error) {
+      window.alert(error.message);
+    } finally {
+      setBusy(false);
+    }
   }
-  return <SvgStage name="Reset_password-1.svg" height={286}>
-    <form className="svg-stage-form" onSubmit={submit}>
-      <SvgInput x={32} y={142} w={486} label="Код сброса пароля" inputMode="numeric" maxLength={6}
-        autoComplete="one-time-code" value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))} />
-      <Hotspot x={178} y={222} w={194} h={40} type="submit" disabled={busy} label="Сбросить пароль" />
+
+  return <AuthCard variant="reset-code">
+    <PageHeading title="Введите код">На ваш Email был отправлен код для сброса пароля.</PageHeading>
+    <form className="reset-code-form" onSubmit={submit}>
+      <FormField label="Код" inputMode="numeric" maxLength={6} autoComplete="one-time-code"
+        placeholder="000000" value={code} onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))} />
+      <CenterActions className="reset-code-submit">
+        <ActionButton type="submit" disabled={busy}>Сбросить пароль</ActionButton>
+      </CenterActions>
     </form>
-  </SvgStage>;
+  </AuthCard>;
 }
