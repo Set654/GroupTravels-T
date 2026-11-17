@@ -169,6 +169,104 @@ namespace TripService.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("TripService.Domain.Entities.SmsOtpChallenge", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ActivatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("AttemptCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.Property<byte[]>("CodeHmac")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<DateTime?>("ConsumedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("LastSentAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Phone")
+                        .IsUnique()
+                        .HasDatabaseName("IX_sms_otp_challenges_phone_pending")
+                        .HasFilter("\"Status\" = 'Pending'");
+
+                    b.ToTable("sms_otp_challenges", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_sms_otp_challenges_active_dates", "\"Status\" <> 'Active' OR (\"ActivatedAtUtc\" IS NOT NULL AND \"ExpiresAtUtc\" IS NOT NULL)");
+
+                            t.HasCheckConstraint("CK_sms_otp_challenges_attempt_count", "\"AttemptCount\" >= 0 AND \"AttemptCount\" <= 5");
+
+                            t.HasCheckConstraint("CK_sms_otp_challenges_dates", "\"ExpiresAtUtc\" IS NULL OR (\"ActivatedAtUtc\" IS NOT NULL AND \"ExpiresAtUtc\" > \"ActivatedAtUtc\")");
+
+                            t.HasCheckConstraint("CK_sms_otp_challenges_hmac_length", "octet_length(\"CodeHmac\") = 32");
+
+                            t.HasCheckConstraint("CK_sms_otp_challenges_status", "\"Status\" IN ('Pending', 'Active', 'Consumed', 'Cancelled')");
+                        });
+                });
+
+            modelBuilder.Entity("TripService.Domain.Entities.SmsOtpSendAttempt", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int?>("ChallengeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasMaxLength(45)
+                        .HasColumnType("character varying(45)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("RequestedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChallengeId");
+
+                    b.HasIndex("IpAddress", "RequestedAtUtc");
+
+                    b.HasIndex("Phone", "RequestedAtUtc");
+
+                    b.ToTable("sms_otp_send_attempts", (string)null);
+                });
+
             modelBuilder.Entity("TripService.Domain.Entities.Trip", b =>
                 {
                     b.Property<int>("Id")
@@ -417,6 +515,16 @@ namespace TripService.Infrastructure.Persistence.Migrations
                     b.Navigation("Trip");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TripService.Domain.Entities.SmsOtpSendAttempt", b =>
+                {
+                    b.HasOne("TripService.Domain.Entities.SmsOtpChallenge", "Challenge")
+                        .WithMany()
+                        .HasForeignKey("ChallengeId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Challenge");
                 });
 
             modelBuilder.Entity("TripService.Domain.Entities.TripActivity", b =>
