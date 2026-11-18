@@ -5,6 +5,9 @@ using TripService.Infrastructure.Persistence;
 using TripService.Infrastructure.Options;
 using TripService.Application.Auth.Interfaces;
 using TripService.Infrastructure.Persistence.Repositories;
+using TripService.Application.Flights.Interfaces;
+using TripService.Infrastructure.Configuration;
+using TripService.Infrastructure.Flights;
 
 namespace TripService.Infrastructure;
 
@@ -24,6 +27,33 @@ public static class DependencyInjection
         services.Configure<OtpOptions>(
             configuration.GetSection(OtpOptions.SectionName));
         services.AddScoped<IOtpChallengeRepository, OtpChallengeRepository>();
+
+        services.Configure<PythonFlightSearchOptions>(
+    configuration.GetSection(PythonFlightSearchOptions.SectionName));
+
+        services.AddHttpClient<IFlightSearchClient, FlightSearchClient>(
+            (serviceProvider, client) =>
+            {
+                var options = serviceProvider
+                    .GetRequiredService<
+                        Microsoft.Extensions.Options.IOptions<PythonFlightSearchOptions>>()
+                    .Value;
+
+                if (!Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out var baseUri) ||
+                    (baseUri.Scheme != Uri.UriSchemeHttp &&
+                     baseUri.Scheme != Uri.UriSchemeHttps))
+                {
+                    throw new InvalidOperationException(
+                        "Некорректный PythonFlightSearch:BaseUrl.");
+                }
+
+                client.BaseAddress = baseUri;
+                client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                AllowAutoRedirect = false
+            });
 
         return services;
     }
