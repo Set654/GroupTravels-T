@@ -1,364 +1,140 @@
 .app {
-  --page: #ffffff;
-  --header: #e6e6e6;
-  --text: #262626;
-  --muted: #5c5c5c;
-  --button: #bebebe;
-  --button-selected: #989898;
-  --card: #e5e5e5;
-  --panel: #e5e5e5;
-  --balance-cell: #c5c5c5;
-  --circle: #c4c4c4;
-
+  --dash-ink: #333333;
+  --dash-muted: #676767;
+  --dash-bg: #ffffff;
+  --dash-header: #e5e5e5;
+  --dash-card: #e5e5e5;
+  --dash-chip: #bfbfbf;
+  --dash-chip-active: #9a9a9a;
+  --dash-cell: #c4c4c4;
+  width: 100%;
   min-height: 100vh;
-  background: var(--page);
-  color: var(--text);
-  transition: background 0.2s ease;
+  background: var(--dash-bg);
+  color: var(--dash-ink);
+  font-family: 'Onest', Arial, Helvetica, sans-serif;
+  font-size: 14px;
 }
 
-.app.dark {
-  --page: #202020;
-  --header: #333333;
-  --text: #f1f1f1;
-  --muted: #cccccc;
-  --button: #5c5c5c;
-  --button-selected: #858585;
-  --card: #3a3a3a;
-  --panel: #353535;
-  --balance-cell: #505050;
-  --circle: #686868;
-}
-
-.header {
-  height: 65px;
-  background: var(--header);
-}
-
-.header-content {
-  height: 100%;
-  padding: 0 2.4%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.brand {
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.header-user {
+.app, .app * { box-sizing: border-box; }
+.app button { font: inherit; color: inherit; cursor: pointer; }
+.app button:focus-visible { outline: 2px solid #787878; outline-offset: 3px; }
+.app .header { height: 58px; width: 100%; background: var(--dash-header); }
+.app .header-content { height: 100%; padding: 0 27px; display: flex; align-items: center; justify-content: space-between; }
+.app .brand { font-size: 14px; line-height: 1.3; font-weight: 600; }
+.app .header-user { display: flex; align-items: center; gap: 16px; }
+.app .username { font-size: 12px; }
+.app .user-avatar { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 50%; background: var(--dash-cell); font-size: 12px; font-weight: 500; }
+.app .theme-switch {
+  width: 42px;
+  height: 23px;
+  margin-right: 40px;
+  border: 0;
+  border-radius: 24px;
+  padding: 3px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: flex-start;
+  background: #d2d2d2;
 }
-
-.username {
-  font-size: 13px;
-}
-
-.user-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--circle);
-  display: grid;
-  place-items: center;
-  font-size: 12px;
-}
-
-.theme-switch {
-  width: 40px;
-  height: 21px;
-  margin-right: 42px;
-  padding: 2px;
-  border: none;
-  border-radius: 20px;
-  background: var(--button);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.theme-switch-circle {
+.app .theme-switch-circle {
   width: 17px;
   height: 17px;
-  background: var(--circle);
+  display: block;
+  flex: none;
   border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 10px;
-  transition: transform 0.2s ease;
+  background: #ffcf30;
+  border: 1px solid #e3ac18;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .55) inset;
 }
 
-.theme-switch-on .theme-switch-circle {
-  transform: translateX(19px);
-}
-
-.dashboard {
-  width: 58%;
-  max-width: 1080px;
-  margin: 34px auto 60px;
+.app .dashboard {
+  width: min(980px, calc(100% - 48px));
+  margin: 62px auto 90px;
   display: grid;
-  grid-template-columns: minmax(0, 3.1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 16px;
   align-items: start;
-  gap: 13px;
 }
-
-.trips-section h1 {
-  margin: 0;
-  font-size: clamp(16px, 1.55vw, 23px);
-  font-weight: 600;
-}
-
-.filters {
-  display: flex;
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.filter-button,
-.create-button,
-.details-button {
-  border: none;
-  color: var(--text);
-  background: var(--button);
-  cursor: pointer;
-  border-radius: 999px;
-}
-
-.filter-button {
-  min-width: 0;
-  width: 30%;
-  max-width: 145px;
-  padding: 7px 9px;
-  font-size: clamp(9px, 0.75vw, 13px);
-}
-
-.filter-button.selected {
-  background: var(--button-selected);
-}
-
-.filter-button:hover,
-.create-button:hover,
-.details-button:hover {
-  filter: brightness(0.95);
-}
-
-.trips-title-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 10px;
-  margin-top: 26px;
-  margin-bottom: 12px;
-}
-
-.trips-title-row h2 {
-  margin: 0;
-  font-size: clamp(12px, 1vw, 18px);
-  font-weight: 600;
-}
-
-.trips-title-row span {
-  font-size: clamp(9px, 0.75vw, 13px);
-  color: var(--muted);
+.app .trips-section { min-width: 0; }
+.app .trips-section h1 { margin: 0; font-size: 25px; line-height: 1.2; font-weight: 600; }
+.app .filters { display: flex; gap: 16px; margin-top: 21px; }
+.app .filter-button {
+  width: 133px;
+  height: 32px;
+  flex: none;
+  border: 0;
+  border-radius: 12px;
+  background: var(--dash-chip);
+  padding: 0 11px;
+  font-size: 12px;
   white-space: nowrap;
 }
-
-.trips-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.trip-card {
+.app .filter-button.selected { background: var(--dash-chip-active); }
+.app .filter-button:hover, .app .create-button:hover, .app .details-button:hover { filter: brightness(.97); }
+.app .trips-title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 34px 0 14px; }
+.app .trips-title-row h2 { font-size: 18px; line-height: 1.35; font-weight: 600; margin: 0; }
+.app .trips-title-row span { font-size: 12px; white-space: nowrap; color: var(--dash-muted); }
+.app .trips-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 16px; row-gap: 18px; }
+.app .trip-card {
+  min-width: 0;
   width: 100%;
-  aspect-ratio: 0.77;
-  padding: 10px;
-  border: none;
-  border-radius: 13px;
-  background: var(--card);
-  color: var(--text);
+  height: 265px;
+  background: var(--dash-card);
+  border: 0;
+  border-radius: 14px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   text-align: left;
-  cursor: pointer;
+}
+.app .trip-card:hover { outline: 2px solid #b3b3b3; }
+.app .trip-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 5px; }
+.app .trip-icon { display: block; width: 39px; height: 39px; flex: none; background: var(--dash-cell); border-radius: 50%; }
+.app .trip-status { padding: 3px 7px; font-size: 10px; line-height: 1.3; white-space: nowrap; background: var(--dash-cell); border-radius: 20px; }
+.app .trip-card-bottom h3 { margin: 0 0 9px; font-size: 16px; line-height: 1.3; font-weight: 600; }
+.app .trip-meta { display: flex; gap: 6px; align-items: center; margin: 5px 0 0; font-size: 12px; line-height: 1.25; }
+.app .meta-icon { display: block; width: 17px; height: 17px; flex: none; background: var(--dash-cell); border-radius: 50%; }
+.app .trip-expenses { display: flex; flex-direction: column; gap: 4px; margin-top: 14px; font-size: 12px; }
+.app .trip-expenses strong { font-size: 17px; font-weight: 600; line-height: 1.2; }
+.app .sidebar { min-width: 0; }
+.app .create-button { width: 100%; height: 32px; border: 0; padding: 0 13px; border-radius: 12px; background: var(--dash-chip-active); font-size: 12px; }
+.app .balance-panel { margin-top: 62px; padding: 12px; display: flex; flex-direction: column; background: var(--dash-card); border-radius: 14px; }
+.app .balance-panel h2 { font-size: 19px; line-height: 1.2; font-weight: 600; margin: 0 0 4px; }
+.app .balance-caption { margin: 0 0 14px; font-size: 11px; line-height: 1.3; }
+.app .balance-item { min-height: 68px; border-radius: 12px; background: var(--dash-cell); padding: 11px 12px; margin-bottom: 5px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+.app .balance-item span { font-size: 12px; line-height: 1.25; }
+.app .balance-item strong { font-size: 20px; line-height: 1.2; font-weight: 600; }
+.app .details-button { align-self: flex-end; margin-top: 17px; padding: 6px 12px; border: 0; border-radius: 20px; background: var(--dash-chip); font-size: 11px; }
+.app .empty-message { padding: 35px 16px; border-radius: 14px; background: var(--dash-card); text-align: center; }
+
+@media (max-width: 1000px) {
+  .app .dashboard { width: calc(100% - 44px); grid-template-columns: minmax(0, 1fr) 195px; gap: 14px; }
+  .app .trips-grid { gap: 12px; }
+  .app .trip-card { padding: 10px; }
 }
 
-.trip-card:hover {
-  outline: 2px solid var(--button-selected);
+@media (max-width: 760px) {
+  .app .header-content { padding: 0 18px; }
+  .app .theme-switch { margin-right: 8px; }
+  .app .dashboard { display: flex; flex-direction: column; width: calc(100% - 36px); margin-top: 32px; }
+  .app .trips-section, .app .sidebar { width: 100%; }
+  .app .sidebar { order: -1; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+  .app .create-button { max-width: 210px; }
+  .app .balance-panel { margin-top: 0; max-width: 280px; flex: 1 1 230px; }
+  .app .filters { gap: 8px; }
+  .app .filter-button { width: calc((100% - 16px) / 3); font-size: 11px; }
+  .app .trips-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .app .trip-card { height: 255px; }
 }
 
-.trip-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 3px;
-}
-
-.trip-icon {
-  width: clamp(26px, 3vw, 40px);
-  height: clamp(26px, 3vw, 40px);
-  flex-shrink: 0;
-  background: var(--circle);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 6px;
-  color: var(--muted);
-}
-
-.trip-status {
-  padding: 4px 6px;
-  background: var(--circle);
-  border-radius: 999px;
-  font-size: clamp(7px, 0.55vw, 10px);
-  white-space: nowrap;
-}
-
-.trip-card-bottom h3 {
-  font-size: clamp(11px, 0.95vw, 16px);
-  font-weight: 600;
-  margin: 0 0 7px;
-}
-
-.trip-meta {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 4px;
-  font-size: clamp(8px, 0.7vw, 12px);
-}
-
-.meta-icon {
-  width: 17px;
-  height: 17px;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  background: var(--circle);
-  border-radius: 50%;
-  font-size: 11px;
-}
-
-.trip-expenses {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  margin-top: 9px;
-  font-size: clamp(9px, 0.75vw, 13px);
-}
-
-.trip-expenses strong {
-  font-size: clamp(12px, 1vw, 17px);
-}
-
-.create-button {
-  width: 100%;
-  padding: 10px 7px;
-  background: var(--button-selected);
-  font-size: clamp(9px, 0.75vw, 13px);
-}
-
-.balance-panel {
-  margin-top: 42px;
-  padding: 12px;
-  background: var(--panel);
-  border-radius: 13px;
-  display: flex;
-  flex-direction: column;
-}
-
-.balance-panel h2 {
-  margin: 0 0 4px;
-  font-size: clamp(14px, 1.1vw, 18px);
-}
-
-.balance-caption {
-  margin: 0 0 12px;
-  font-size: clamp(8px, 0.7vw, 12px);
-}
-
-.balance-item {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  padding: 11px;
-  margin-bottom: 6px;
-  border-radius: 12px;
-  background: var(--balance-cell);
-}
-
-.balance-item span {
-  font-size: clamp(9px, 0.78vw, 13px);
-}
-
-.balance-item strong {
-  font-size: clamp(16px, 1.45vw, 23px);
-}
-
-.details-button {
-  align-self: flex-end;
-  margin-top: 6px;
-  padding: 6px 12px;
-  font-size: clamp(9px, 0.75vw, 13px);
-}
-
-.empty-message {
-  padding: 35px 15px;
-  border-radius: 12px;
-  background: var(--card);
-  text-align: center;
-  font-size: 13px;
-}
-
-@media (max-width: 900px) {
-  .dashboard {
-    width: 90%;
-  }
-}
-
-@media (max-width: 600px) {
-  .header-content {
-    padding: 0 16px;
-  }
-
-  .theme-switch {
-    margin-right: 0;
-  }
-
-  .dashboard {
-    width: calc(100% - 32px);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .trips-section,
-  .sidebar {
-    width: 100%;
-  }
-
-  .sidebar {
-    order: -1;
-  }
-
-  .balance-panel {
-    margin-top: 16px;
-  }
-
-  .trips-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .filter-button {
-    font-size: 11px;
-  }
-}
-
-@media (max-width: 360px) {
-  .trips-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 430px) {
+  .app .brand { font-size: 12px; }
+  .app .header-user { gap: 8px; }
+  .app .username { font-size: 11px; }
+  .app .theme-switch { margin-right: 4px; }
+  .app .trips-section h1 { font-size: 23px; }
+  .app .trips-title-row h2 { font-size: 16px; }
+  .app .trips-grid { grid-template-columns: 1fr; }
+  .app .trip-card { height: 270px; }
 }

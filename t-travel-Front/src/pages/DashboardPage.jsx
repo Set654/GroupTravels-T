@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './DashboardPage.css';
 
-// Пока сервер не подключён, данные о поездках хранятся в массиве.
 const trips = [
   { id: 1, name: 'Название поездки', dates: '21–30 ноября 2026', people: 4, expenses: 24000, type: 'active' },
   { id: 2, name: 'Название поездки', dates: '21–30 ноября 2026', people: 4, expenses: 24000, type: 'active' },
@@ -27,25 +27,26 @@ const statusLabels = {
 };
 
 function TripCard({ trip }) {
+  const navigate = useNavigate();
   return (
     <button
       className="trip-card"
       type="button"
-      onClick={() => window.alert('Экран отдельной поездки добавим на следующем этапе.')}
+      onClick={() => navigate(`/trips/${trip.id}`)}
     >
       <div className="trip-card-top">
-        <span className="trip-icon">Иконка</span>
+        <span className="trip-icon" aria-hidden="true"></span>
         <span className="trip-status">{statusLabels[trip.type]}</span>
       </div>
 
       <div className="trip-card-bottom">
         <h3>{trip.name}</h3>
         <div className="trip-meta">
-          <span className="meta-icon">▦</span>
+          <span className="meta-icon" aria-hidden="true"></span>
           <span>{trip.dates}</span>
         </div>
         <div className="trip-meta">
-          <span className="meta-icon">♙</span>
+          <span className="meta-icon" aria-hidden="true"></span>
           <span>{trip.people} участника</span>
         </div>
         <div className="trip-expenses">
@@ -73,7 +74,7 @@ function BalancePanel() {
       </div>
       <div className="balance-item">
         <span>Чистый баланс:</span>
-        <strong>1500 ₽</strong>
+        <strong>−1500 ₽</strong>
       </div>
 
       <button
@@ -87,29 +88,30 @@ function BalancePanel() {
   );
 }
 
-export default function App() {
+export default function DashboardPage() {
   const [activeFilter, setActiveFilter] = useState('active');
-  const [darkTheme, setDarkTheme] = useState(false);
 
   const visibleTrips = trips.filter((trip) => trip.type === activeFilter);
   const currentFilter = filters.find((filter) => filter.id === activeFilter);
   const tripWord = visibleTrips.length === 1 ? 'поездка' :
     visibleTrips.length >= 2 && visibleTrips.length <= 4 ? 'поездки' : 'поездок';
-  const userName = sessionStorage.getItem('ttravel_user_name') || 'Пользователь';
+  const headingText = activeFilter === 'active' ? 'Предстоящие поездки' : currentFilter.heading;
+  const tripCountText = activeFilter === 'active' ? '3 поездки' : `${visibleTrips.length} ${tripWord}`;
+  const userName = (() => { try { return sessionStorage.getItem('ttravel_user_name') || 'Алексей'; } catch { return 'Алексей'; } })();
   return (
-    <div className={`app ${darkTheme ? 'dark' : ''}`}>
+    <div className="app">
       <header className="header">
         <div className="header-content">
           <span className="brand">Т-путешествия</span>
           <div className="header-user">
             <button
-              className={`theme-switch ${darkTheme ? 'theme-switch-on' : ''}`}
+              className="theme-switch"
               type="button"
-              aria-label="Переключить тему"
-              aria-pressed={darkTheme}
-              onClick={() => setDarkTheme(!darkTheme)}
+              aria-label="Переключатель темы"
+              title="Переключить тему"
+              onClick={() => {}}
             >
-              <span className="theme-switch-circle">☀</span>
+              <span className="theme-switch-circle" />
             </button>
             <span className="username">{userName}</span>
             <span className="user-avatar">{userName.charAt(0).toUpperCase()}</span>
@@ -136,8 +138,8 @@ export default function App() {
           </div>
 
           <div className="trips-title-row">
-            <h2>{currentFilter.heading}</h2>
-            <span>{visibleTrips.length} {tripWord}</span>
+            <h2>{headingText}</h2>
+            <span>{tripCountText}</span>
           </div>
 
           {visibleTrips.length > 0 ? (

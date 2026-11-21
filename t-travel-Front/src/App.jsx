@@ -9,6 +9,7 @@ import ResetCodePage from './pages/ResetCodePage.jsx';
 import NewPasswordPage from './pages/NewPasswordPage.jsx';
 import WelcomePage from './pages/WelcomePage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
+import TripPage from './pages/TripPage.jsx';
 import { getToken } from './lib/authStorage.js';
 
 function AuthLayout({ children }) {
@@ -34,8 +35,8 @@ export default function App() {
         <Route path="/new-password" element={<AuthLayout><NewPasswordPage /></AuthLayout>} />
         <Route path="/welcome" element={<RequireAuth><AuthLayout><WelcomePage /></AuthLayout></RequireAuth>} />
         <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
-        {/* Создание поездки не реализовано: временно открываем дашборд. */}
-        <Route path="/new" element={<RequireAuth><Navigate to="/dashboard" replace /></RequireAuth>} />
+        <Route path="/trips/:tripId" element={<RequireAuth><TripPage /></RequireAuth>} />
+        <Route path="/new"element={<RequireAuth><Navigate to="/trips/1" replace /></RequireAuth>}/>
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
