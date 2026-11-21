@@ -24,6 +24,8 @@ public class AppDbContext : DbContext
     public DbSet<TripActivity> TripActivities => Set<TripActivity>();
 
     public DbSet<Log> Logs => Set<Log>();
+    public DbSet<SmsOtpChallenge> SmsOtpChallenges => Set<SmsOtpChallenge>();
+    public DbSet<SmsOtpSendAttempt> SmsOtpSendAttempts => Set<SmsOtpSendAttempt>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
