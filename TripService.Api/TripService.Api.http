@@ -1,6 +1,25 @@
-@TripService.Api_HostAddress = http://localhost:5261
+@TripService.Api_HostAddress = https://localhost:7247
 
-GET {{TripService.Api_HostAddress}}/openapi/v1.json/
+### Работает: проверка, что ASP.NET Core отвечает
+GET {{TripService.Api_HostAddress}}/api/health/live
 Accept: application/json
 
-###
+### Корректный JSON, но запись НЕ сохраняется: ожидаем HTTP 501
+POST {{TripService.Api_HostAddress}}/api/trips
+Content-Type: application/json
+
+{
+  "tripName": "Поездка в Казань",
+  "startDate": "2026-12-10",
+  "endDate": "2026-12-15"
+}
+
+### Ошибка бизнес-правила: дата окончания раньше начала — HTTP 400 INVALID_TRIP_DATA
+POST {{TripService.Api_HostAddress}}/api/trips
+Content-Type: application/json
+
+{
+  "tripName": "Поездка в Казань",
+  "startDate": "2026-12-10",
+  "endDate": "2026-12-01"
+}
