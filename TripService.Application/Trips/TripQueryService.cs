@@ -1,10 +1,9 @@
-﻿
-namespace TripService.Application.Trips
+﻿namespace TripService.Application.Trips
 {
-    public class GetTripService
+    public class TripQueryService
     {
         private readonly ITripRepository _tripRepository;
-        public GetTripService(ITripRepository tripRepository)
+        public TripQueryService(ITripRepository tripRepository)
         {
             _tripRepository = tripRepository;
         }
