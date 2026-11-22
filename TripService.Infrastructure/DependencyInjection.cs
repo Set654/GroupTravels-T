@@ -8,6 +8,8 @@ using TripService.Infrastructure.Persistence.Repositories;
 using TripService.Application.Flights.Interfaces;
 using TripService.Infrastructure.Configuration;
 using TripService.Infrastructure.Flights;
+using TripService.Application.Trips;
+using TripService.Infrastructure.Repositories;
 
 namespace TripService.Infrastructure;
 
@@ -23,6 +25,7 @@ public static class DependencyInjection
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
+        services.AddScoped<ITripRepository, TripRepository>();
 
         services.Configure<OtpOptions>(
             configuration.GetSection(OtpOptions.SectionName));
