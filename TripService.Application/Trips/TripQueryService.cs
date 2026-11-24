@@ -12,5 +12,10 @@
         {
             return _tripRepository.GetAsync(userId, tripId, today, ct);
         }
+
+        public Task<IReadOnlyList<TripInfo>> ListAsync(int userId, DateOnly today, CancellationToken ct)
+        {
+            return _tripRepository.ListAsync(userId, today, ct);
+        }
     }
 }
