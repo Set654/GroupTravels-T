@@ -7,7 +7,7 @@ public sealed class TripCreationServiceTests
     [Fact]
     public void PrepareTrip_ValidData_ReturnsTripWithTrimmedName()
     {
-        var service = new CreateTripService();
+        var service = new CreateTripService(null!);
 
         var trip = service.PrepareTrip(
             "  Казань  ",
@@ -24,7 +24,7 @@ public sealed class TripCreationServiceTests
     [Fact]
     public void PrepareTrip_EmptyName_ThrowsArgumentException()
     {
-        var service = new CreateTripService();
+        var service = new CreateTripService(null!);
         Assert.Throws<ArgumentException>(() => service.PrepareTrip(
             "  ", new DateOnly(2026, 12, 10),
             new DateOnly(2026, 12, 15), null));
@@ -33,7 +33,7 @@ public sealed class TripCreationServiceTests
     [Fact]
     public void PrepareTrip_EndBeforeStart_ThrowsArgumentException()
     {
-        var service = new CreateTripService();
+        var service = new CreateTripService(null!);
         Assert.Throws<ArgumentException>(() => service.PrepareTrip(
             "Казань", new DateOnly(2026, 12, 10),
             new DateOnly(2026, 12, 1), null));
@@ -42,7 +42,7 @@ public sealed class TripCreationServiceTests
     [Fact]
     public void PrepareTrip_NonHttpsCover_ThrowsArgumentException()
     {
-        var service = new CreateTripService();
+        var service = new CreateTripService(null!);
         Assert.Throws<ArgumentException>(() => service.PrepareTrip(
             "Казань", new DateOnly(2026, 12, 10),
             new DateOnly(2026, 12, 15), "http://example.org/image.jpg"));

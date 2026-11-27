@@ -4,6 +4,17 @@ namespace TripService.Application.Trips;
 
 public sealed class CreateTripService
 {
+    private readonly ITripRepository _tripRepository;
+    public CreateTripService(ITripRepository tripRepository)
+    {
+        _tripRepository = tripRepository;
+    }
+    public Task<int> CreateAsync(int userId, string? name, DateOnly? startDate, DateOnly? endDate, string? coverUrl, CancellationToken ct)
+    {
+        var prt = PrepareTrip(name, startDate, endDate, coverUrl);
+        return _tripRepository.CreateAsync(userId, prt.Name, prt.StartDate, prt.EndDate, prt.CoverUrl, ct);
+    }
+
     public Trip PrepareTrip(
         string? name,
         DateOnly? startDate,

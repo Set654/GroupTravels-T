@@ -2,6 +2,7 @@
 using TripService.Application.Trips;
 using TripService.Domain.Entities;
 using TripService.Infrastructure.Persistence;
+using Npgsql;
 
 namespace TripService.Infrastructure.Repositories;
 
@@ -182,5 +183,115 @@ public class TripRepository : ITripRepository
             member.Status,
             null
         );
+    }
+
+    public async Task<InviteResult> InviteAsync(
+    int tripId,
+    string? email,
+    string? phone,
+    CancellationToken ct)
+    {
+        User? user;
+
+        if (email is not null)
+        {
+            user = await _context.Users
+                .SingleOrDefaultAsync(u => u.Email == email, ct);
+        }
+        else
+        {
+            user = await _context.Users
+                .SingleOrDefaultAsync(u => u.Phone == phone, ct);
+        }
+
+        if (user is null)
+        {
+            return new InviteResult(InviteStatus.UserNotFound);
+        }
+
+        var alreadyExists = await _context.TripMembers
+            .AnyAsync(m =>
+                m.TripId == tripId &&
+                m.UserId == user.Id,
+                ct);
+
+        if (alreadyExists)
+        {
+            return new InviteResult(InviteStatus.AlreadyInvited);
+        }
+
+        var member = new TripMember
+        {
+            TripId = tripId,
+            UserId = user.Id,
+            VirtualName = null,
+            Role = "Member",
+            Status = "Pending"
+        };
+
+        _context.TripMembers.Add(member);
+
+        try
+        {
+            await _context.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex) when (
+            ex.InnerException is PostgresException pg &&
+            pg.SqlState == PostgresErrorCodes.UniqueViolation &&
+            pg.ConstraintName == "IX_trip_members_trip_id_user_id")
+        {
+            _context.Entry(member).State = EntityState.Detached;
+
+            return new InviteResult(InviteStatus.AlreadyInvited);
+        }
+
+        return new InviteResult(
+            InviteStatus.Created,
+            member.Id);
+    }
+
+    public async Task<IReadOnlyList<InvitationInfo>> GetInvitationsAsync(
+    int userId,
+    CancellationToken ct)
+    {
+        var query =
+            from member in _context.TripMembers.AsNoTracking()
+            join owner in _context.TripMembers.AsNoTracking()
+                on member.TripId equals owner.TripId
+            where member.UserId == userId
+                && member.Status == "Pending"
+                && owner.Role == "Owner"
+                && owner.Status == "Accepted"
+            select new InvitationInfo(
+                member.Id,
+                member.TripId,
+                member.Trip.Name,
+                owner.User!.Name,
+                member.Trip.StartDate,
+                member.Trip.EndDate);
+
+        return await query.ToListAsync(ct);
+    }
+
+    public async Task<bool> RespondToInviteAsync(
+    int userId,
+    int tripId,
+    int memberId,
+    string status,
+    CancellationToken ct)
+    {
+        var affectedRows = await _context.TripMembers
+            .Where(m =>
+                m.Id == memberId &&
+                m.TripId == tripId &&
+                m.UserId == userId &&
+                m.Status == "Pending")
+            .ExecuteUpdateAsync(
+                setters => setters.SetProperty(
+                    m => m.Status,
+                    status),
+                ct);
+
+        return affectedRows == 1;
     }
 }
