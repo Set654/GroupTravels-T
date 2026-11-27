@@ -1,16 +1,23 @@
+using TripService.Api.Extensions;
+using TripService.Application.Trips;
 using TripService.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddPersistence(builder.Configuration);
+
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+builder.Services.AddScoped<TripQueryService>();
+builder.Services.AddScoped<CreateTripService>();
+builder.Services.AddScoped<TripMemberService>();
+
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -18,6 +25,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
