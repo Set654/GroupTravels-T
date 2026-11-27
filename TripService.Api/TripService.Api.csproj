@@ -25,4 +25,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="http-client.env.json.user" />
+  </ItemGroup>
+
 </Project>
