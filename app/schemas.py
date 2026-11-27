@@ -4,7 +4,7 @@ from datetime import date
 from typing import Annotated, Literal
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
-from normalization import MAX_DOTNET_PRICE
+from .normalization import MAX_DOTNET_PRICE
 
 
 class FlightOffer(BaseModel):

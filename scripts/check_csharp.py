@@ -18,9 +18,9 @@ import uvicorn
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from api import create_app
-from service import FlightService
-from settings import Settings
+from app.api import create_app
+from app.service import FlightService
+from app.settings import Settings
 
 
 def main() -> None:
@@ -45,7 +45,7 @@ def main() -> None:
     child_env = {**os.environ, "INTERNAL_API_KEY": settings.internal_api_key,
                  "FLIGHTS_BASE_URL": f"http://127.0.0.1:{port}/"}
     try:
-        with patch("travelpayouts.requests.get", return_value=response):
+        with patch("app.travelpayouts.requests.get", return_value=response):
             thread.start()
             deadline = time.monotonic() + 8
             while not server.started:

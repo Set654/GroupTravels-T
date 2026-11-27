@@ -8,11 +8,11 @@ import requests
 from urllib3.exceptions import ReadTimeoutError
 from fastapi.testclient import TestClient
 
-from api import create_app
-from catalog import load_locations
-from errors import ConfigurationError
-from service import FlightService
-from settings import Settings
+from app.api import create_app
+from app.catalog import load_locations
+from app.errors import ConfigurationError
+from app.service import FlightService
+from app.settings import Settings
 
 
 class TestFlightAPI(unittest.TestCase):
@@ -25,7 +25,7 @@ class TestFlightAPI(unittest.TestCase):
         self.response = Mock(spec=requests.Response)
         self.response.status_code = 200
         self.response.json.return_value = {"success": True, "data": []}
-        self.get = self.enterContext(patch("travelpayouts.requests.get", return_value=self.response))
+        self.get = self.enterContext(patch("app.travelpayouts.requests.get", return_value=self.response))
         self.headers = {"X-Internal-Api-Key": self.settings.internal_api_key}
         self.query = {"origin": "MOW", "destination": "LED", "departureDate": "2026-12-15"}
         self.ticket = {
@@ -240,7 +240,7 @@ class TestFlightAPI(unittest.TestCase):
 
     def test_unexpected_error_is_sanitized_and_logged_without_secrets(self):
         self.get.side_effect = RuntimeError(self.settings.travelpayouts_token)
-        with self.assertLogs("api", level="ERROR") as logs:
+        with self.assertLogs("app.api", level="ERROR") as logs:
             self.assert_error(self.search(), 500, "INTERNAL_ERROR")
         self.assertNotIn(self.settings.travelpayouts_token, " ".join(logs.output))
 

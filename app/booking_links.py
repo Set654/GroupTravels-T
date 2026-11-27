@@ -3,7 +3,7 @@
 import re
 from urllib.parse import unquote, urlsplit, urlunsplit
 
-from errors import ProviderResponseError
+from .errors import ProviderResponseError
 
 ALLOWED_HOSTS = frozenset({"aviasales.ru", "www.aviasales.ru", "aviasales.com", "www.aviasales.com"})
 

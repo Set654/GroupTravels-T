@@ -4,8 +4,8 @@ import re
 from calendar import monthrange
 from datetime import date
 
-from errors import SearchValidationError
-from catalog import load_locations
+from .errors import SearchValidationError
+from .catalog import load_locations
 
 
 def _normalize_code(value: str, name: str) -> str:

@@ -5,9 +5,9 @@ import re
 from datetime import date, datetime, timezone
 from decimal import Decimal
 
-from errors import ProviderResponseError
-from booking_links import build_booking_url
-from catalog import matches_location
+from .errors import ProviderResponseError
+from .booking_links import build_booking_url
+from .catalog import matches_location
 
 MAX_DOTNET_PRICE = 79228162514264337593543950335
 

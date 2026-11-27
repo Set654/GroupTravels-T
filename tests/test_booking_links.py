@@ -1,7 +1,7 @@
 import unittest
 
-from booking_links import build_booking_url
-from errors import ProviderResponseError
+from app.booking_links import build_booking_url
+from app.errors import ProviderResponseError
 
 
 class TestBookingLinks(unittest.TestCase):

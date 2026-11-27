@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from dotenv import load_dotenv
 
-from errors import ConfigurationError
+from .errors import ConfigurationError
 
 
 @dataclass(frozen=True)

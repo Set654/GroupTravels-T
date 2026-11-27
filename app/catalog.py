@@ -4,9 +4,9 @@ import json
 from functools import lru_cache
 from pathlib import Path
 
-from errors import ConfigurationError
+from .errors import ConfigurationError
 
-CATALOG_PATH = Path(__file__).parent / "data" / "iata_locations.json"
+CATALOG_PATH = Path(__file__).resolve().parents[1] / "data" / "iata_locations.json"
 
 
 @lru_cache(maxsize=1)

@@ -3,8 +3,8 @@
 import requests
 from urllib3.exceptions import ReadTimeoutError
 
-from errors import ConfigurationError, ProviderResponseError, ProviderSearchError
-from validation import validate_search_parameters
+from .errors import ConfigurationError, ProviderResponseError, ProviderSearchError
+from .validation import validate_search_parameters
 
 SEARCH_URL = "https://api.travelpayouts.com/aviasales/v3/prices_for_dates"
 

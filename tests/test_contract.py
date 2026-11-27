@@ -8,12 +8,12 @@ import requests
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
-from api import create_app
-from service import FlightService
-from settings import Settings
-from schemas import FlightOffer
+from app.api import create_app
+from app.service import FlightService
+from app.settings import Settings
+from app.schemas import FlightOffer
 
-ROOT = Path(__file__).parent
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class TestExportedContract(unittest.TestCase):
@@ -41,7 +41,7 @@ class TestExportedContract(unittest.TestCase):
         tickets = json.loads((ROOT / "examples" / "provider_offers.json").read_text(encoding="utf-8"))
         response = Mock(spec=requests.Response)
         response.status_code = 200
-        with TestClient(self.app) as client, patch("travelpayouts.requests.get", return_value=response):
+        with TestClient(self.app) as client, patch("app.travelpayouts.requests.get", return_value=response):
             for payload, filename in ((tickets, "search-success.json"), ([], "search-empty.json")):
                 with self.subTest(filename=filename):
                     response.json.return_value = {"success": True, "data": payload}

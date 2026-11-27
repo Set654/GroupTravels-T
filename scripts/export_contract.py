@@ -8,10 +8,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from api import create_app
-from normalization import normalize_search_flight
-from schemas import FlightSearchResponse
-from settings import Settings
+from app.api import create_app
+from app.normalization import normalize_search_flight
+from app.schemas import FlightSearchResponse
+from app.settings import Settings
 
 
 def write_json(path: Path, content: dict) -> None:

@@ -2,8 +2,8 @@ import copy
 import json
 import unittest
 
-from errors import ProviderResponseError
-from normalization import normalize_flight
+from app.errors import ProviderResponseError
+from app.normalization import normalize_flight
 
 
 class TestNormalizeFlight(unittest.TestCase):

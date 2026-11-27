@@ -5,12 +5,12 @@ from datetime import date, datetime
 from threading import BoundedSemaphore
 from zoneinfo import ZoneInfo
 
-from errors import ServiceBusyError
-from normalization import normalize_search_flight
-from schemas import FlightSearchResponse
-from settings import Settings
-from travelpayouts import fetch_offers
-from validation import validate_mvp_search
+from .errors import ServiceBusyError
+from .normalization import normalize_search_flight
+from .schemas import FlightSearchResponse
+from .settings import Settings
+from .travelpayouts import fetch_offers
+from .validation import validate_mvp_search
 
 
 class FlightService:
