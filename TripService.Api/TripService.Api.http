@@ -1,11 +1,15 @@
 @TripService.Api_HostAddress = https://localhost:7247
 
-### Работает: проверка, что ASP.NET Core отвечает
+### 1. Проверка работы сервера — 200
 GET {{TripService.Api_HostAddress}}/api/health/live
 Accept: application/json
 
-### Корректный JSON, но запись НЕ сохраняется: ожидаем HTTP 501
+### 2. Запрос без авторизации — 401
+GET {{TripService.Api_HostAddress}}/api/trips
+
+### 3. Создание поездки — 201
 POST {{TripService.Api_HostAddress}}/api/trips
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -14,8 +18,72 @@ Content-Type: application/json
   "endDate": "2026-12-15"
 }
 
-### Ошибка бизнес-правила: дата окончания раньше начала — HTTP 400 INVALID_TRIP_DATA
+### 4. Получение своих поездок — 200
+GET {{TripService.Api_HostAddress}}/api/trips
+Authorization: Bearer {{token}}
+
+### 5. Получение конкретной поездки — 200
+GET {{TripService.Api_HostAddress}}/api/trips/{{tripId}}
+Authorization: Bearer {{token}}
+
+### 6. Получение участников — 200
+GET {{TripService.Api_HostAddress}}/api/trips/{{tripId}}/members
+Authorization: Bearer {{token}}
+
+### 7. Добавление виртуального участника — 201
+POST {{TripService.Api_HostAddress}}/api/trips/{{tripId}}/members/virtual
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "virtualName": "Коля"
+}
+
+### 8. Приглашение по телефону — 201
+POST {{TripService.Api_HostAddress}}/api/trips/{{tripId}}/invite
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "phone": "{{invitePhone}}"
+}
+
+### 9. Приглашение по email — 201
+POST {{TripService.Api_HostAddress}}/api/trips/{{tripId}}/invite
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "email": "{{inviteEmail}}"
+}
+
+### 10. Получение входящих приглашений — 200
+GET {{TripService.Api_HostAddress}}/api/trips/invitations
+Authorization: Bearer {{inviteeToken}}
+
+### 11. Принятие приглашения — 200
+PUT {{TripService.Api_HostAddress}}/api/trips/{{tripId}}/invite/respond
+Authorization: Bearer {{inviteeToken}}
+Content-Type: application/json
+
+{
+  "memberId": {{memberId}},
+  "decision": "Accept"
+}
+
+### 12. Отклонение приглашения — 200
+PUT {{TripService.Api_HostAddress}}/api/trips/{{tripId}}/invite/respond
+Authorization: Bearer {{inviteeToken}}
+Content-Type: application/json
+
+{
+  "memberId": {{memberId}},
+  "decision": "Decline"
+}
+
+### 13. Некорректные даты поездки — 400
 POST {{TripService.Api_HostAddress}}/api/trips
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -23,3 +91,7 @@ Content-Type: application/json
   "startDate": "2026-12-10",
   "endDate": "2026-12-01"
 }
+
+### 14. Попытка открыть чужую поездку — 404
+GET {{TripService.Api_HostAddress}}/api/trips/{{tripId}}
+Authorization: Bearer {{inviteeToken}}
